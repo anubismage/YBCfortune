@@ -1,0 +1,23 @@
+main: com.quakeworld.s4sfortune.Main
+name: s4sfortune
+version: 1.0
+author: Quake_World
+description: Roll your fortune
+commands:
+    roll:
+      description: Roll your fortune!
+      aliases: [ fortune ]
+      usage: "Usage: /roll or /fortune"
+      permission: s4sfortune.roll
+    funnyban:
+      description: the funny ban
+      aliases: [ ]
+      usage: "Usage: /funnyban user reason"
+      permission: s4sfortune.funnyban
+permissions:
+  s4sfortune.roll:
+   description: Allows roll command
+   default: true
+  s4sfortune.funnyban:
+   description: funny ban 
+   default: op
