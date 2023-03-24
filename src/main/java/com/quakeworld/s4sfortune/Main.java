@@ -291,6 +291,15 @@ public class Main extends JavaPlugin implements Listener
         return list[(int) Math.floor(list.length * Math.random())];
     }
 
+    private Fortune getFortune(int i){
+        return regularFortunes[i];
+    }
+    private Fortune getspecialFortune(int i){
+        return specialFortunes[i];
+    }
+
+
+
     // FIXME break out into separate plugin
     @EventHandler
     public void AsyncChatEvent(AsyncPlayerChatEvent e) {
@@ -337,6 +346,14 @@ public class Main extends JavaPlugin implements Listener
 
                     getServer().spigot().broadcast(component, reason);
                 }
+            }
+
+            if (commandNouns[0].equals("/regrolltest") && e.getPlayer().isOp())  {
+                announceRoll(regularFortunes[Integer.parseInt(commandNouns[1])], e.getPlayer());
+            }
+
+            if (commandNouns[0].equals("/srolltest") && e.getPlayer().isOp())  {
+                announceRoll(specialFortunes[Integer.parseInt(commandNouns[1])], e.getPlayer());
             }
         } catch (IndexOutOfBoundsException excpt) {
             return true;
