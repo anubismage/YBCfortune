@@ -57,9 +57,9 @@ public class Main extends JavaPlugin implements Listener
             @Override
             public void run() {
                 TextComponent advertprefix = new TextComponent("⭐ " + pickRandomFromList(adverts) + " ");
-        //        TextComponent advertlink = new TextComponent("#yubicraft:matrix.org");
+        //        TextComponent advertlink = new TextComponent("");
         //        TextComponent advertspace = new TextComponent(" / ");
-        //        TextComponent advertlink2 = new TextComponent("discord.gg/zus9dcvfjU");
+        //        TextComponent advertlink2 = new TextComponent("");
 
         //        advertprefix.setItalic(true);
         //        advertspace.setItalic(true);
@@ -72,10 +72,10 @@ public class Main extends JavaPlugin implements Listener
         //        advertlink2.setColor(ChatColor.of("#0dbd8b"));
 
         //        advertlink.setUnderlined(true);
-        //        advertlink.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://matrix.to/#yubicraft:matrix.org"));
+        //        advertlink.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, ""));
 
         //        advertlink2.setUnderlined(true);
-        //        advertlink2.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/zus9dcvfjU"));
+        //        advertlink2.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, ""));
 
                 getServer().spigot().broadcast(advertprefix); // advertlink, advertspace,advertlink2
             }
@@ -158,7 +158,7 @@ public class Main extends JavaPlugin implements Listener
                 ChatColor.BOLD + "" + ChatColor.RED + "Your fortune: (YOU ARE BANNED)" + ChatColor.RESET, banEnd, "s4sfortune");
         player.kickPlayer(ChatColor.BOLD + "" + ChatColor.RED + "Your fortune: (YOU ARE BANNED)");
     }),
-        new Fortune("#f7dc6f", "Your Shitty Luck Has Angered ZESUCHAMA", (player) -> {
+        new Fortune("#f7dc6f", "Your Shitty Luck Has Angered ZEUSCHAMA", (player) -> {
             Location loc = player.getLocation();
             loc.getWorld().strikeLightningEffect(loc);
     }),
