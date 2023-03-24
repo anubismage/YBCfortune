@@ -141,7 +141,6 @@ public class Main extends JavaPlugin implements Listener
         new Fortune("#43fd3b", "Good news will come to you by mail"),
         new Fortune("#16f174", "（ ´_ゝ`）ﾌｰﾝ"),
         new Fortune("#00cbb0", "ｷﾀ━━━━━━(ﾟ∀ﾟ)━━━━━━ !!!!"),
-        new Fortune("#0893e1", "You will meet a dark handsome stranger"),
         new Fortune("#2a56fb", "Better not tell you now"),
         new Fortune("#6023f8", "Outlook good"),
         //Godly luck moved to special fortune
@@ -170,6 +169,7 @@ public class Main extends JavaPlugin implements Listener
 
         new Fortune("#fff451", "THEY GLOW IN THE DARK", (player) -> {
             player.addPotionEffect((new PotionEffect(PotionEffectType.GLOWING, 300,1)));
+            player.addPotionEffect((new PotionEffect(PotionEffectType.INVISIBILITY, 300,0)));
     }),
         new Fortune("#396a24", "*BRAAAAAAP* You Feel a Strange Smell around you ", (player) -> {
         player.addPotionEffect((new PotionEffect(PotionEffectType.CONFUSION, 20,1)));
@@ -189,7 +189,7 @@ public class Main extends JavaPlugin implements Listener
     }),
         new Fortune("#b48905", "Berries :D", (player) -> {
         Location loc = player.getLocation();
-        Location centerOfBlock = loc.add(0.5, 0.5, 0.5);
+        Location centerOfBlock = loc.add(0, 0.5, 0);
             ItemStack item = new ItemStack(Material.SWEET_BERRIES,64);
             ItemMeta im = item.getItemMeta();
             im.setDisplayName(ChatColor.RED + "displayName");
@@ -209,7 +209,7 @@ public class Main extends JavaPlugin implements Listener
 
         new Fortune("#b48905", "Pippa Feet Reveal", (player) -> {
         Location loc = player.getLocation();
-        Location centerOfBlock = loc.add(0.5, 0.5, 0.5);
+        Location centerOfBlock = loc.add(0, 0.5, 0);
         ItemStack item = new ItemStack(Material.RABBIT_FOOT,1);
         ItemMeta im = item.getItemMeta();
         im.setDisplayName(ChatColor.LIGHT_PURPLE + "Pippa's FOOT");
