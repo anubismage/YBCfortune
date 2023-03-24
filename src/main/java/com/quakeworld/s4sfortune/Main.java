@@ -127,11 +127,14 @@ public class Main extends JavaPlugin implements Listener
         if (s >=0.9){
             Location centerOfBlock = loco.add(0, 0.5, 0);
             loco.getWorld().dropItemNaturally(centerOfBlock,new ItemStack(Material.COBBLESTONE, 640));
-        }else if(s>=0.5){
-            player.addPotionEffect((new PotionEffect(PotionEffectType.POISON, 400,0)));
-        }else if(s>=0.3) {
-            player.teleport(loco.add(0,103,0));
-        }else if(s>=0.2) {
+        }else if(s>=0.8){
+            player.addPotionEffect((new PotionEffect(PotionEffectType.POISON, 60,0)));
+        }else if(s>=0.7) {
+            player.teleport(loco.add(0,164,0));
+        }else if(s>=0.6) {
+            player.addPotionEffect((new PotionEffect(PotionEffectType.WITHER, 5,0)));
+        }
+        else if(s>=0.5) {
             player.setHealth(1);
         }
         else{
@@ -139,7 +142,6 @@ public class Main extends JavaPlugin implements Listener
         }
     }),
         new Fortune("#43fd3b", "Good news will come to you by mail"),
-        new Fortune("#16f174", "（ ´_ゝ`）ﾌｰﾝ"),
         new Fortune("#00cbb0", "ｷﾀ━━━━━━(ﾟ∀ﾟ)━━━━━━ !!!!"),
         new Fortune("#2a56fb", "Better not tell you now"),
         new Fortune("#6023f8", "Outlook good"),
@@ -182,10 +184,10 @@ public class Main extends JavaPlugin implements Listener
         Location locc =player.getLocation();
         locc.getWorld().spawnEntity(locc.add(0,2,5), EntityType.WANDERING_TRADER);
     }),
-        new Fortune("#00d7ff", "trudy too diamonds ebin :DD", (player) -> {
+        new Fortune("#00d7ff", "Sixtee foour diamonds ebin :DD", (player) -> {
          Location loc = player.getLocation();
          Location centerOfBlock = loc.add(0.5, 0.5, 0.5);
-         loc.getWorld().dropItemNaturally(centerOfBlock,new ItemStack(Material.DIAMOND, 32));
+         loc.getWorld().dropItemNaturally(centerOfBlock,new ItemStack(Material.DIAMOND, 64));
     }),
         new Fortune("#b48905", "Berries :D", (player) -> {
         Location loc = player.getLocation();
@@ -224,7 +226,9 @@ public class Main extends JavaPlugin implements Listener
         new Fortune("#ec44e3", "ayy lmao", (player) -> {
         player.addPotionEffect((new PotionEffect(PotionEffectType.LEVITATION, 60,0)));
     }), //[Changed]levitating effect
-
+        new Fortune("#a205df", "Very Bad Luck", (player) -> {
+        player.getInventory().clear(RandomUtils.nextInt(28) + 9);
+    }),
         new Fortune("#d302a7", "Godly Luck", (player) -> {
         player.addPotionEffect((new PotionEffect(PotionEffectType.LUCK, 300*20,0)));
         double s = Math.random();
@@ -260,6 +264,7 @@ public class Main extends JavaPlugin implements Listener
             item.getItemMeta().setDisplayName(ChatColor.BLUE + "displayName");
             loc.getWorld().dropItemNaturally(loc,item);
         }),//fish
+
     };
 
     private void announceRoll(Fortune fortune, Player roller) {
