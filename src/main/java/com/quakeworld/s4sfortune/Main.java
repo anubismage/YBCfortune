@@ -119,7 +119,7 @@ public class Main extends JavaPlugin implements Listener
         new Fortune("#f51c6a", "Reply hazy, try again"),
         new Fortune("#e7890c", "Good Luck"),
         new Fortune("#bac200", "Average Luck"),
-        new Fortune("#7fec11", "Bad Luck", (player) -> {
+        new Fortune("#a205df", "Very Bad Luck", (player) -> {
         player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2*60*20,0)));
         double s = Math.random();
         //Bad luck reroll
@@ -145,6 +145,7 @@ public class Main extends JavaPlugin implements Listener
         new Fortune("#00cbb0", "ｷﾀ━━━━━━(ﾟ∀ﾟ)━━━━━━ !!!!"),
         new Fortune("#2a56fb", "Better not tell you now"),
         new Fortune("#6023f8", "Outlook good"),
+        new Fortune("#7fec11", "Bad Luck"),
         //Godly luck moved to special fortune
     };
 
@@ -226,9 +227,7 @@ public class Main extends JavaPlugin implements Listener
         new Fortune("#ec44e3", "ayy lmao", (player) -> {
         player.addPotionEffect((new PotionEffect(PotionEffectType.LEVITATION, 60,0)));
     }), //[Changed]levitating effect
-        new Fortune("#a205df", "Very Bad Luck", (player) -> {
-        player.getInventory().clear(RandomUtils.nextInt(28) + 9);
-    }),
+
         new Fortune("#d302a7", "Godly Luck", (player) -> {
         player.addPotionEffect((new PotionEffect(PotionEffectType.LUCK, 300*20,0)));
         double s = Math.random();
