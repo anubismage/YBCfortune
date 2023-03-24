@@ -6,7 +6,7 @@ Minecraft Plugin that does
 * Uses Spigot annouce to send timed banners
 
 Implements class Forturnes for rolls
-The rolls are split into 2 catergories Normal(80%) and Rare(20&).
+The rolls are split into 2 catergories Normal(80%) and Rare(20%).
 
 ## Changelog Pre-1.19.4 ##
 * Normal Roll
