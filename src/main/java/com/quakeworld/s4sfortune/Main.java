@@ -126,13 +126,13 @@ public class Main extends JavaPlugin implements Listener
                 Location loco = player.getLocation();
                 if (s >= 0.9) {
                     Location centerOfBlock = loco.add(0, 0.5, 0);
-                    loco.getWorld().dropItemNaturally(centerOfBlock, new ItemStack(Material.COBBLESTONE, 640));
+                    loco.getWorld().dropItemNaturally(centerOfBlock, new ItemStack(Material.COBBLESTONE, 920));
                 } else if (s >= 0.8) {
-                    player.addPotionEffect((new PotionEffect(PotionEffectType.POISON, 60, 0)));
+                    player.addPotionEffect((new PotionEffect(PotionEffectType.POISON, 2 * 60 * 20, 0)));
                 } else if (s >= 0.7) {
                     player.teleport(loco.add(0, 164, 0));
                 } else if (s >= 0.6) {
-                    player.addPotionEffect((new PotionEffect(PotionEffectType.WITHER, 5, 0)));
+                    player.addPotionEffect((new PotionEffect(PotionEffectType.WITHER, 25 * 20, 0)));
                 } else if (s >= 0.5) {
                     player.setHealth(1);
                 } else {
@@ -149,7 +149,7 @@ public class Main extends JavaPlugin implements Listener
                 if (k >= 0.5){
                     player.setFireTicks(500);
                 }else{
-                    player.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 90, 0)));
+                    player.addPotionEffect((new PotionEffect(PotionEffectType.SLOW,2 * 60 * 20 , 0)));
                 }
             }),
             //Godly luck moved to special fortune
@@ -172,16 +172,12 @@ public class Main extends JavaPlugin implements Listener
             loc.getWorld().strikeLightningEffect(loc);
     }),
 
-      /*  new Fortune("#00d7ff", "sixtee four diamonds ebin :DD", (player) -> {
-            player.getInventory().addItem(new ItemStack(Material.DIAMOND, 64));
-        }), */
-
         new Fortune("#fff451", "THEY GLOW IN THE DARK", (player) -> {
-            player.addPotionEffect((new PotionEffect(PotionEffectType.GLOWING, 300,1)));
-            player.addPotionEffect((new PotionEffect(PotionEffectType.INVISIBILITY, 300,0)));
+            player.addPotionEffect((new PotionEffect(PotionEffectType.GLOWING, 300*20,1)));
+            player.addPotionEffect((new PotionEffect(PotionEffectType.INVISIBILITY, 300*20,0)));
     }),
         new Fortune("#396a24", "*BRAAAAAAP* You Feel a Strange Smell around you ", (player) -> {
-        player.addPotionEffect((new PotionEffect(PotionEffectType.CONFUSION, 20,1)));
+        player.addPotionEffect((new PotionEffect(PotionEffectType.CONFUSION, 2*20,1)));
     }),
         new Fortune("#141414", "You meet a dark handsome stranger ", (player) -> {
             Location locc =player.getLocation();
@@ -193,7 +189,7 @@ public class Main extends JavaPlugin implements Listener
     }),
         new Fortune("#00d7ff", "Sixtee foour diamonds ebin :DD", (player) -> {
          Location loc = player.getLocation();
-         Location centerOfBlock = loc.add(0.5, 0.5, 0.5);
+         Location centerOfBlock = loc.add(0.5, 0, 0.5);
          loc.getWorld().dropItemNaturally(centerOfBlock,new ItemStack(Material.DIAMOND, 64));
     }),
         new Fortune("#b48905", "Berries :D", (player) -> {
@@ -201,7 +197,7 @@ public class Main extends JavaPlugin implements Listener
         Location centerOfBlock = loc.add(0, 0.5, 0);
             ItemStack item = new ItemStack(Material.SWEET_BERRIES,64);
             ItemMeta im = item.getItemMeta();
-            im.setDisplayName(ChatColor.RED + "displayName");
+            im.setDisplayName(ChatColor.RED + "Berry");
             List<String> loreList = new ArrayList<String>();
             loreList.add(ChatColor.BOLD + "Berry");//This is the first line of lore
             loreList.add(ChatColor.GRAY + "Its a berry");//This is the second line of lore
@@ -213,7 +209,7 @@ public class Main extends JavaPlugin implements Listener
         player.addPotionEffect((new PotionEffect(PotionEffectType.SLOW_DIGGING, 30*20,0)));
     }),
         new Fortune("#4a6f28", "You are blessed with OP's speed",(player) -> {
-            player.addPotionEffect((new PotionEffect(PotionEffectType.SPEED, 60*5,2)));
+            player.addPotionEffect((new PotionEffect(PotionEffectType.SPEED, 60*20,2)));
         }), //[Changed] you are blessed with op's speed (speed effect)
 
         new Fortune("#b48905", "Pippa Feet Reveal", (player) -> {
@@ -231,7 +227,7 @@ public class Main extends JavaPlugin implements Listener
     }), //[Changed] pippa's feet item
 
         new Fortune("#ec44e3", "ayy lmao", (player) -> {
-        player.addPotionEffect((new PotionEffect(PotionEffectType.LEVITATION, 60,0)));
+        player.addPotionEffect((new PotionEffect(PotionEffectType.LEVITATION, 25*20,0)));
     }), //[Changed]levitating effect
 
         new Fortune("#d302a7", "Godly Luck", (player) -> {
@@ -241,32 +237,38 @@ public class Main extends JavaPlugin implements Listener
         Location locoG = player.getLocation();
         if (s >=0.9){
             ItemStack pcake = new ItemStack(Material.CAKE,1);
-            //ItemMeta im = item.getItemMeta();
-            pcake.getItemMeta().setDisplayName(ChatColor.LIGHT_PURPLE + "Pogu's Cake");
+            ItemMeta meta = pcake.getItemMeta();
+            meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Pogu's Cake");
+            pcake.setItemMeta(meta);
             locoG.getWorld().dropItemNaturally(locoG,pcake);
         }else if(s>=0.8){
             ItemStack pegg = new ItemStack(Material.VILLAGER_SPAWN_EGG,2);
-            pegg.getItemMeta().setDisplayName(ChatColor.YELLOW + "SEGGS EGGS");
+            ItemMeta meta = pegg.getItemMeta();
+            meta.setDisplayName(ChatColor.MAGIC + "SEGGS EGGS");
+            pegg.setItemMeta(meta);
             locoG.getWorld().dropItemNaturally(locoG,pegg);
 
         }else if(s>=0.5) {
             ItemStack gN = new ItemStack(Material.GOLD_NUGGET,1);
-            gN.getItemMeta().setDisplayName(ChatColor.YELLOW + "Rabi's Blessing");
+            ItemMeta meta = gN.getItemMeta();
+            meta.setDisplayName(ChatColor.GOLD + "Rabi's Blessing");
+            gN.setItemMeta(meta);
             locoG.getWorld().dropItemNaturally(locoG,gN);
         }
         else{
             int amount = (int)(s* 10);
-            ItemStack gN = new ItemStack(Material.IRON_INGOT,amount);
-            gN.getItemMeta().setDisplayName(ChatColor.STRIKETHROUGH + "Pocket Change");
+            ItemStack gN = new ItemStack(Material.IRON_NUGGET,amount);
+            ItemMeta meta = gN.getItemMeta();
+            meta.setDisplayName(ChatColor.STRIKETHROUGH + "Pocket Change");
+            gN.setItemMeta(meta);
             locoG.getWorld().dropItemNaturally(locoG,gN);
         }
     }),
-        new Fortune("#a922ca", "You caught a fish!", (player) -> {
+        new Fortune("#006994", "You caught a fish!", (player) -> {
             List<Material> fishlist = Arrays.asList(Material.TROPICAL_FISH_BUCKET,Material.PUFFERFISH_BUCKET,Material.COD_BUCKET,Material.SALMON_BUCKET);
             Material Fish = fishlist.get(RandomUtils.nextInt(fishlist.size()));
             Location loc = player.getLocation();
             ItemStack item = new ItemStack(Fish,1);
-            item.getItemMeta().setDisplayName(ChatColor.BLUE + "displayName");
             loc.getWorld().dropItemNaturally(loc,item);
         }),//fish
 
