@@ -116,37 +116,43 @@ public class Main extends JavaPlugin implements Listener
     };
 
     private final Fortune[] regularFortunes = {
-        new Fortune("#f51c6a", "Reply hazy, try again"),
-        new Fortune("#e7890c", "Good Luck"),
-        new Fortune("#bac200", "Average Luck"),
-        new Fortune("#a205df", "Very Bad Luck", (player) -> {
-        player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2*60*20,0)));
-        double s = Math.random();
-        //Bad luck reroll
-        Location loco = player.getLocation();
-        if (s >=0.9){
-            Location centerOfBlock = loco.add(0, 0.5, 0);
-            loco.getWorld().dropItemNaturally(centerOfBlock,new ItemStack(Material.COBBLESTONE, 640));
-        }else if(s>=0.8){
-            player.addPotionEffect((new PotionEffect(PotionEffectType.POISON, 60,0)));
-        }else if(s>=0.7) {
-            player.teleport(loco.add(0,164,0));
-        }else if(s>=0.6) {
-            player.addPotionEffect((new PotionEffect(PotionEffectType.WITHER, 5,0)));
-        }
-        else if(s>=0.5) {
-            player.setHealth(1);
-        }
-        else{
-            player.setFireTicks(500);
-        }
-    }),
-        new Fortune("#43fd3b", "Good news will come to you by mail"),
-        new Fortune("#00cbb0", "ｷﾀ━━━━━━(ﾟ∀ﾟ)━━━━━━ !!!!"),
-        new Fortune("#2a56fb", "Better not tell you now"),
-        new Fortune("#6023f8", "Outlook good"),
-        new Fortune("#7fec11", "Bad Luck"),
-        //Godly luck moved to special fortune
+            new Fortune("#f51c6a", "Reply hazy, try again"),
+            new Fortune("#e7890c", "Good Luck"),
+            new Fortune("#bac200", "Average Luck"),
+            new Fortune("#a205df", "Very Bad Luck", (player) -> {
+                player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2 * 60 * 20, 0)));
+                double s = Math.random();
+                //Bad luck reroll
+                Location loco = player.getLocation();
+                if (s >= 0.9) {
+                    Location centerOfBlock = loco.add(0, 0.5, 0);
+                    loco.getWorld().dropItemNaturally(centerOfBlock, new ItemStack(Material.COBBLESTONE, 640));
+                } else if (s >= 0.8) {
+                    player.addPotionEffect((new PotionEffect(PotionEffectType.POISON, 60, 0)));
+                } else if (s >= 0.7) {
+                    player.teleport(loco.add(0, 164, 0));
+                } else if (s >= 0.6) {
+                    player.addPotionEffect((new PotionEffect(PotionEffectType.WITHER, 5, 0)));
+                } else if (s >= 0.5) {
+                    player.setHealth(1);
+                } else {
+                    player.setFireTicks(500);
+                }
+            }),
+            new Fortune("#43fd3b", "Good news will come to you by mail"),
+            new Fortune("#00cbb0", "ｷﾀ━━━━━━(ﾟ∀ﾟ)━━━━━━ !!!!"),
+            new Fortune("#2a56fb", "Better not tell you now"),
+            new Fortune("#6023f8", "Outlook good"),
+            new Fortune("#7fec11", "Bad Luck", (player) -> {
+                player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2 * 60 * 20, 0)));
+                double k = Math.random();
+                if (k >= 0.5){
+                    player.setFireTicks(500);
+                }else{
+                    player.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 90, 0)));
+                }
+            }),
+            //Godly luck moved to special fortune
     };
 
 
@@ -289,13 +295,6 @@ public class Main extends JavaPlugin implements Listener
 
     private <T> T pickRandomFromList(T[] list) {
         return list[(int) Math.floor(list.length * Math.random())];
-    }
-
-    private Fortune getFortune(int i){
-        return regularFortunes[i];
-    }
-    private Fortune getspecialFortune(int i){
-        return specialFortunes[i];
     }
 
 
