@@ -3,9 +3,9 @@ package com.quakeworld.s4sfortune;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.random.*; 
+import java.util.Random;
 
-import com.sun.istack.internal.NotNull;
-import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -99,7 +99,7 @@ public class Main extends JavaPlugin implements Listener
             "server chat yah!",
             "fumo posting area ᗜˬᗜ",
             "ඞ",
-            "0 days in last yab",
+            "0 since last yab",
             "\"\"\"appeal\"\"\" your ban ;) ;) ",
             "PIPPA NOTICE ME",
             "yeah, me",
@@ -109,7 +109,7 @@ public class Main extends JavaPlugin implements Listener
             "do your reps!",
             "rigger Hate!",
             "cum",
-            "Dnot let this ERP distract you from the fact that Pekora bought a fucking MONKEEEE",
+            "Don't let this ERP distract you from the fact that Pekora bought a fucking MONKEEEE",
             "I LOVE WHOOOOOOOOOOOOOOOOOOOOOOOOOORES",
             "YOU WILL NOT PIRATE JAVS",
             "reminder to hide your discord overlay!",
@@ -121,7 +121,7 @@ public class Main extends JavaPlugin implements Listener
             new Fortune("#bac200", "Average Luck"),
             new Fortune("#a205df", "Very Bad Luck", (player) -> {
                 player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2 * 60 * 20, 0)));
-                double s = Math.random();
+                double s = RandomGenerator.of("Random").nextFloat();
                 //Bad luck reroll
                 Location loco = player.getLocation();
                 if (s >= 0.9) {
@@ -145,7 +145,7 @@ public class Main extends JavaPlugin implements Listener
             new Fortune("#6023f8", "Outlook good"),
             new Fortune("#7fec11", "Bad Luck", (player) -> {
                 player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2 * 60 * 20, 0)));
-                double k = Math.random();
+                double k = RandomGenerator.of("Random").nextFloat();
                 if (k >= 0.5){
                     player.setFireTicks(500);
                 }else{
@@ -160,7 +160,7 @@ public class Main extends JavaPlugin implements Listener
         new Fortune("#ff0000", "(YOU ARE BANNED)", (player) -> {
         //random lenght of time 10mins to 8hrs
         int onehr = 60*60*1000;
-        int time = (int) Math.floor(Math.random() < 0.1 ? Math.random() < 0.1 ? 8 * onehr : onehr : 10 * 60 * 1000);
+        int time = (Math.random() < 0.1) ? ((Math.random() < 0.1) ? (8 * onehr) : 10 * 60 * 1000) : RandomGenerator.of("Random").nextInt(1800000,25200000);
         // int time = (int) Math.floor(ye);
         Date banEnd = new Date(System.currentTimeMillis() + time);
         Bukkit.getBanList(Type.NAME).addBan(player.getName(),
@@ -232,7 +232,7 @@ public class Main extends JavaPlugin implements Listener
 
         new Fortune("#d302a7", "Godly Luck", (player) -> {
         player.addPotionEffect((new PotionEffect(PotionEffectType.LUCK, 300*20,0)));
-        double s = Math.random();
+        double s = RandomGenerator.of("Random").nextFloat();
         //Good luck reroll
         Location locoG = player.getLocation();
         if (s >=0.9){
@@ -266,7 +266,7 @@ public class Main extends JavaPlugin implements Listener
     }),
         new Fortune("#006994", "You caught a fish!", (player) -> {
             List<Material> fishlist = Arrays.asList(Material.TROPICAL_FISH_BUCKET,Material.PUFFERFISH_BUCKET,Material.COD_BUCKET,Material.SALMON_BUCKET);
-            Material Fish = fishlist.get(RandomUtils.nextInt(fishlist.size()));
+            Material Fish = fishlist.get(RandomGenerator.of("Random").nextInt(fishlist.size()));
             Location loc = player.getLocation();
             ItemStack item = new ItemStack(Fish,1);
             loc.getWorld().dropItemNaturally(loc,item);
@@ -296,7 +296,7 @@ public class Main extends JavaPlugin implements Listener
     }
 
     private <T> T pickRandomFromList(T[] list) {
-        return list[(int) Math.floor(list.length * Math.random())];
+        return list[RandomGenerator.of("Random").nextInt(list.length)];
     }
 
 
@@ -308,7 +308,7 @@ public class Main extends JavaPlugin implements Listener
     }
 
     @EventHandler
-    public boolean PlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent e) {
+    public void PlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent e) {
         String[] commandNouns = e.getMessage().split(" ");
 
         try {
@@ -357,10 +357,8 @@ public class Main extends JavaPlugin implements Listener
                 announceRoll(specialFortunes[Integer.parseInt(commandNouns[1])], e.getPlayer());
             }
         } catch (IndexOutOfBoundsException excpt) {
-            return true;
+            continue;
         }
-
-        return true;
     }
 
     public void urlHandler(String message, Set<Player> recipients) {
@@ -409,7 +407,7 @@ public class Main extends JavaPlugin implements Listener
         }
                                  
         if (command.getName().equalsIgnoreCase("roll")) {
-            int special = (int) Math.floor(SPECIAL_PROBABILITY * Math.random()); 
+            int special = RandomGenerator.of("Random").nextInt(SPECIAL_PROBABILITY); 
 
             if (special == 1) {
                 // do a special roll
