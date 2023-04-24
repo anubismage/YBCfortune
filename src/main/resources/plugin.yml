@@ -3,6 +3,7 @@ name: s4sfortune
 version: 1.0
 author: Quake_World
 description: Roll your fortune
+api-version: 1.19
 commands:
     roll:
       description: Roll your fortune!
