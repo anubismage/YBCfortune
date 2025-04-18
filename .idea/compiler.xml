@@ -9,8 +9,5 @@
         <module name="s4sfortune" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="s4sfortune" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

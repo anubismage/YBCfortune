@@ -1,9 +1,9 @@
 main: com.quakeworld.s4sfortune.Main
 name: s4sfortune
-version: 1.0
-author: Quake_World
+version: 2.0
+author: Anubis_mage
 description: Roll your fortune
-api-version: 1.19
+api-version: 1.21
 commands:
     roll:
       description: Roll your fortune!
@@ -15,10 +15,22 @@ commands:
       aliases: [ ]
       usage: "Usage: /funnyban user reason"
       permission: s4sfortune.funnyban
+    srolltest:
+      description: use with roll order to test rolls
+      aliases: [ ]
+      usage: "Usage: /srolltest <roll number>"
+      permission: s4sfortune.admin
+    unfortune:
+      description: Removes a fortune ban from a player
+      usage: "/unfortunate <player>"
+      permission: s4sfortune.admin
 permissions:
   s4sfortune.roll:
    description: Allows roll command
    default: true
   s4sfortune.funnyban:
    description: funny ban 
+   default: op
+  s4sfortune.srolltest:
+   description: test roll order
    default: op

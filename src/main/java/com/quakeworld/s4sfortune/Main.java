@@ -3,7 +3,6 @@ package com.quakeworld.s4sfortune;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.util.random.*; 
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -13,6 +12,8 @@ import org.bukkit.BanList.Type;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.Player;
@@ -41,42 +42,26 @@ public class Main extends JavaPlugin implements Listener
 {
     // one in n
     final int SPECIAL_PROBABILITY = 20;
-
-    public class LastRoll {
-        String name;
-        String time;
-    }
+    
+    // List to store adverts loaded from config
+    private List<String> adverts;
+    private List<Fortune> regularFortunes = new ArrayList<>();
 
     private HashMap<String, Date> nextRolls = new HashMap<String, Date>();
 
     @Override
     public void onEnable() {
+        // Save default config if it doesn't exist
+        saveDefaultConfig();
+        loadAdvertsFromConfig();
+        loadRegularFortunesFromConfig();
         getServer().getPluginManager().registerEvents(this, this);
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
                 TextComponent advertprefix = new TextComponent("⭐ " + pickRandomFromList(adverts) + " ");
-        //        TextComponent advertlink = new TextComponent("");
-        //        TextComponent advertspace = new TextComponent(" / ");
-        //        TextComponent advertlink2 = new TextComponent("");
-
-        //        advertprefix.setItalic(true);
-        //        advertspace.setItalic(true);
-        //        advertlink.setItalic(true);
-        //        advertlink2.setItalic(true);
-
                 advertprefix.setColor(ChatColor.of("#0dbd8b"));
-        //        advertspace.setColor(ChatColor.of("#0dbd8b"));
-        //        advertlink.setColor(ChatColor.of("#0dbd8b"));
-        //        advertlink2.setColor(ChatColor.of("#0dbd8b"));
-
-        //        advertlink.setUnderlined(true);
-        //        advertlink.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, ""));
-
-        //        advertlink2.setUnderlined(true);
-        //        advertlink2.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, ""));
-
                 getServer().spigot().broadcast(advertprefix); // advertlink, advertspace,advertlink2
             }
         }
@@ -84,195 +69,79 @@ public class Main extends JavaPlugin implements Listener
         , 20L * 60 * 60 // 60 minutes
         );
     }
-    @Override
-    public void onDisable() {
+    
+    /**
+     * Loads adverts from config.yml
+     */
+    private void loadAdvertsFromConfig() {
+        adverts = new ArrayList<>();
+        List<String> configAdverts = getConfig().getStringList("adverts");
+        
+        for (String advert : configAdverts) {
+            // Replace "future year" with current year for HoloEN3 entry
+            if (advert.contains("future year")) {
+                advert = advert.replace("future year", String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+            }
+            adverts.add(advert);
+        }
+        
+        getLogger().info("Loaded " + adverts.size() + " adverts from config");
     }
-
-    private final String[] adverts = {
-            "secret erp channel",
-            "chatroom where you say ogey rrat",
-            "ONGOING RAID (jk)",
-            "be nice!",
-            "gura in the dark room",
-            "HoloEN3 " + Calendar.getInstance().get(Calendar.YEAR),
-            "kiara fan club",
-            "server chat yah!",
-            "fumo posting area ᗜˬᗜ",
-            "ඞ",
-            "0 since last yab",
-            "\"\"\"appeal\"\"\" your ban ;) ;) ",
-            "PIPPA NOTICE ME",
-            "yeah, me",
-            "virtual youtuber enthusiasts group",
-            "おはよううううううううう！！！",
-            "SEXXXXX",
-            "do your reps!",
-            "rigger Hate!",
-            "cum",
-            "Don't let this ERP distract you from the fact that Pekora bought a fucking MONKEEEE",
-            "I LOVE WHOOOOOOOOOOOOOOOOOOOOOOOOOORES",
-            "YOU WILL NOT PIRATE JAVS",
-            "reminder to hide your discord overlay!",
-    };
-
-    private final Fortune[] regularFortunes = {
-            new Fortune("#f51c6a", "Reply hazy, try again"),
-            new Fortune("#e7890c", "Good Luck"),
-            new Fortune("#bac200", "Average Luck"),
-            new Fortune("#a205df", "Very Bad Luck", (player) -> {
-                player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2 * 60 * 20, 0)));
-                double s = RandomGenerator.of("Random").nextFloat();
-                //Bad luck reroll
-                Location loco = player.getLocation();
-                if (s >= 0.9) {
+    
+    /**
+     * Loads regular fortunes from config.yml
+     */
+    private void loadRegularFortunesFromConfig() {
+        regularFortunes.clear();
+        
+        regularFortunes.add(new Fortune("#a205df", "Very Bad Luck", (player) -> {
+            player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2 * 60 * 20, 0)));
+            int s = new Random().nextInt(10); 
+            Location loco = player.getLocation();
+            switch (s) {
+                case 0:
                     Location centerOfBlock = loco.add(0, 0.5, 0);
                     loco.getWorld().dropItemNaturally(centerOfBlock, new ItemStack(Material.COBBLESTONE, 920));
-                } else if (s >= 0.8) {
-                    player.addPotionEffect((new PotionEffect(PotionEffectType.POISON, 2 * 60 * 20, 0)));
-                } else if (s >= 0.7) {
+                    break;
+                case 1:
+                    player.addPotionEffect((new PotionEffect(PotionEffectType.POISON, 25 * 20, 0)));
+                    break;
+                case 2:
                     player.teleport(loco.add(0, 164, 0));
-                } else if (s >= 0.6) {
+                    break;
+                case 3:
                     player.addPotionEffect((new PotionEffect(PotionEffectType.WITHER, 25 * 20, 0)));
-                } else if (s >= 0.5) {
+                    break;
+                case 4:
                     player.setHealth(1);
-                } else {
+                    break;
+                default:
                     player.setFireTicks(500);
-                }
-            }),
-            new Fortune("#43fd3b", "Good news will come to you by mail"),
-            new Fortune("#00cbb0", "ｷﾀ━━━━━━(ﾟ∀ﾟ)━━━━━━ !!!!"),
-            new Fortune("#2a56fb", "Better not tell you now"),
-            new Fortune("#6023f8", "Outlook good"),
-            new Fortune("#7fec11", "Bad Luck", (player) -> {
-                player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2 * 60 * 20, 0)));
-                double k = RandomGenerator.of("Random").nextFloat();
-                if (k >= 0.5){
-                    player.setFireTicks(500);
-                }else{
-                    player.addPotionEffect((new PotionEffect(PotionEffectType.SLOW,2 * 60 * 20 , 0)));
-                }
-            }),
-            //Godly luck moved to special fortune
-    };
-
-
-    private final Fortune[] specialFortunes = {
-        new Fortune("#ff0000", "(YOU ARE BANNED)", (player) -> {
-        //random lenght of time 10mins to 8hrs
-        int onehr = 60*60*1000;
-        int time = (Math.random() < 0.1) ? ((Math.random() < 0.1) ? (8 * onehr) : 10 * 60 * 1000) : RandomGenerator.of("Random").nextInt(1800000,25200000);
-        // int time = (int) Math.floor(ye);
-        Date banEnd = new Date(System.currentTimeMillis() + time);
-        Bukkit.getBanList(Type.NAME).addBan(player.getName(),
-                ChatColor.BOLD + "" + ChatColor.RED + "Your fortune: (YOU ARE BANNED)" + ChatColor.RESET, banEnd, "s4sfortune");
-        player.kickPlayer(ChatColor.BOLD + "" + ChatColor.RED + "Your fortune: (YOU ARE BANNED)");
-    }),
-        new Fortune("#f7dc6f", "Your Shitty Luck Has Angered ZEUSCHAMA", (player) -> {
-            Location loc = player.getLocation();
-            loc.getWorld().strikeLightningEffect(loc);
-    }),
-
-        new Fortune("#fff451", "THEY GLOW IN THE DARK", (player) -> {
-            player.addPotionEffect((new PotionEffect(PotionEffectType.GLOWING, 300*20,1)));
-            player.addPotionEffect((new PotionEffect(PotionEffectType.INVISIBILITY, 300*20,0)));
-    }),
-        new Fortune("#396a24", "*BRAAAAAAP* You Feel a Strange Smell around you ", (player) -> {
-        player.addPotionEffect((new PotionEffect(PotionEffectType.CONFUSION, 2*20,1)));
-    }),
-        new Fortune("#141414", "You meet a dark handsome stranger ", (player) -> {
-            Location locc =player.getLocation();
-            locc.getWorld().spawnEntity(locc.add(0,1,0), EntityType.ENDERMAN);
-    }),
-        new Fortune("#ffd700", "Oy Vey", (player) -> {
-        Location locc =player.getLocation();
-        locc.getWorld().spawnEntity(locc.add(0,2,5), EntityType.WANDERING_TRADER);
-    }),
-        new Fortune("#00d7ff", "Sixtee foour diamonds ebin :DD", (player) -> {
-         Location loc = player.getLocation();
-         Location centerOfBlock = loc.add(0.5, 0, 0.5);
-         loc.getWorld().dropItemNaturally(centerOfBlock,new ItemStack(Material.DIAMOND, 64));
-    }),
-        new Fortune("#b48905", "Berries :D", (player) -> {
-        Location loc = player.getLocation();
-        Location centerOfBlock = loc.add(0, 0.5, 0);
-            ItemStack item = new ItemStack(Material.SWEET_BERRIES,64);
-            ItemMeta im = item.getItemMeta();
-            im.setDisplayName(ChatColor.RED + "Berry");
-            List<String> loreList = new ArrayList<String>();
-            loreList.add(ChatColor.BOLD + "Berry");//This is the first line of lore
-            loreList.add(ChatColor.GRAY + "Its a berry");//This is the second line of lore
-            im.setLore(loreList);
-            item.setItemMeta(im);
-        loc.getWorld().dropItemNaturally(centerOfBlock,item);
-    }),
-        new Fortune("#68923a", "Get Shrekt", (player) -> {
-        player.addPotionEffect((new PotionEffect(PotionEffectType.SLOW_DIGGING, 30*20,0)));
-    }),
-        new Fortune("#4a6f28", "You are blessed with OP's speed",(player) -> {
-            player.addPotionEffect((new PotionEffect(PotionEffectType.SPEED, 60*20,2)));
-        }), //[Changed] you are blessed with op's speed (speed effect)
-
-        new Fortune("#b48905", "Pippa Feet Reveal", (player) -> {
-        Location loc = player.getLocation();
-        Location centerOfBlock = loc.add(0, 0.5, 0);
-        ItemStack item = new ItemStack(Material.RABBIT_FOOT,1);
-        ItemMeta im = item.getItemMeta();
-        im.setDisplayName(ChatColor.LIGHT_PURPLE + "Pippa's FOOT");
-        List<String> loreList = new ArrayList<String>();
-        loreList.add(ChatColor.BOLD + "Feet");//This is the first line of lore
-        loreList.add(ChatColor.GRAY + "A cute bunny's feet");//This is the second line of lore
-        im.setLore(loreList);
-        item.setItemMeta(im);
-        loc.getWorld().dropItemNaturally(centerOfBlock,item);
-    }), //[Changed] pippa's feet item
-
-        new Fortune("#ec44e3", "ayy lmao", (player) -> {
-        player.addPotionEffect((new PotionEffect(PotionEffectType.LEVITATION, 25*20,0)));
-    }), //[Changed]levitating effect
-
-        new Fortune("#d302a7", "Godly Luck", (player) -> {
-        player.addPotionEffect((new PotionEffect(PotionEffectType.LUCK, 300*20,0)));
-        double s = RandomGenerator.of("Random").nextFloat();
-        //Good luck reroll
-        Location locoG = player.getLocation();
-        if (s >=0.9){
-            ItemStack pcake = new ItemStack(Material.CAKE,1);
-            ItemMeta meta = pcake.getItemMeta();
-            meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Pogu's Cake");
-            pcake.setItemMeta(meta);
-            locoG.getWorld().dropItemNaturally(locoG,pcake);
-        }else if(s>=0.8){
-            ItemStack pegg = new ItemStack(Material.VILLAGER_SPAWN_EGG,2);
-            ItemMeta meta = pegg.getItemMeta();
-            meta.setDisplayName(ChatColor.MAGIC + "SEGGS EGGS");
-            pegg.setItemMeta(meta);
-            locoG.getWorld().dropItemNaturally(locoG,pegg);
-
-        }else if(s>=0.5) {
-            ItemStack gN = new ItemStack(Material.GOLD_NUGGET,1);
-            ItemMeta meta = gN.getItemMeta();
-            meta.setDisplayName(ChatColor.GOLD + "Rabi's Blessing");
-            gN.setItemMeta(meta);
-            locoG.getWorld().dropItemNaturally(locoG,gN);
+                    break;
+            }
+        }));
+        
+        regularFortunes.add(new Fortune("#7fec11", "Bad Luck", (player) -> {
+            player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2 * 60 * 20, 0)));
+            double k = Math.random();
+            if (k >= 0.5){
+                player.addPotionEffect((new PotionEffect(PotionEffectType.BLINDNESS,25*20 , 0)));
+            }else{
+                player.addPotionEffect((new PotionEffect(PotionEffectType.SLOW,2 * 60 * 20 , 0)));
+            }
+        }));
+        
+        // Load regular fortunes from config
+        List<Map<?, ?>> configFortunes = getConfig().getMapList("regularFortunes");
+        
+        for (Map<?, ?> fortuneMap : configFortunes) {
+            String color = (String) fortuneMap.get("color");
+            String text = (String) fortuneMap.get("text");
+            regularFortunes.add(new Fortune(color, text));
         }
-        else{
-            int amount = (int)(s* 10);
-            ItemStack gN = new ItemStack(Material.IRON_NUGGET,amount);
-            ItemMeta meta = gN.getItemMeta();
-            meta.setDisplayName(ChatColor.STRIKETHROUGH + "Pocket Change");
-            gN.setItemMeta(meta);
-            locoG.getWorld().dropItemNaturally(locoG,gN);
-        }
-    }),
-        new Fortune("#006994", "You caught a fish!", (player) -> {
-            List<Material> fishlist = Arrays.asList(Material.TROPICAL_FISH_BUCKET,Material.PUFFERFISH_BUCKET,Material.COD_BUCKET,Material.SALMON_BUCKET);
-            Material Fish = fishlist.get(RandomGenerator.of("Random").nextInt(fishlist.size()));
-            Location loc = player.getLocation();
-            ItemStack item = new ItemStack(Fish,1);
-            loc.getWorld().dropItemNaturally(loc,item);
-        }),//fish
-
-    };
+        
+        getLogger().info("Loaded " + regularFortunes.size() + " fortunes (including " + configFortunes.size() + " from config)");
+    }
 
     private void announceRoll(Fortune fortune, Player roller) {
         TextComponent toRoller = new TextComponent("Your fortune: " + fortune.fortune);
@@ -296,16 +165,22 @@ public class Main extends JavaPlugin implements Listener
     }
 
     private <T> T pickRandomFromList(T[] list) {
-        return list[RandomGenerator.of("Random").nextInt(list.length)];
+        return list[new Random().nextInt(list.length)];
     }
 
-
+    private <T> T pickRandomFromList(List<T> list) {
+        return list.get(new Random().nextInt(list.size()));
+    }
 
     // FIXME break out into separate plugin
     @EventHandler
     public void AsyncChatEvent(AsyncPlayerChatEvent e) {
         urlHandler(e.getMessage(), e.getRecipients());
+        if (e.getMessage().startsWith(">")) {
+            e.setMessage(ChatColor.GREEN + e.getMessage());
+        }
     }
+
 
     @EventHandler
     public void PlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent e) {
@@ -350,12 +225,23 @@ public class Main extends JavaPlugin implements Listener
             }
 
             if (commandNouns[0].equals("/regrolltest") && e.getPlayer().isOp())  {
-                announceRoll(regularFortunes[Integer.parseInt(commandNouns[1])], e.getPlayer());
+                announceRoll(regularFortunes.get(Integer.parseInt(commandNouns[1])), e.getPlayer());
             }
 
             if (commandNouns[0].equals("/srolltest") && e.getPlayer().isOp())  {
-                announceRoll(specialFortunes[Integer.parseInt(commandNouns[1])], e.getPlayer());
+                announceRoll(SpecialFortunes.fortunes[Integer.parseInt(commandNouns[1])], e.getPlayer());
             }
+
+            if (commandNouns[0].equals("/unfortunate") && e.getPlayer().isOp()) {
+
+                String playerName = getServer().getOfflinePlayer(commandNouns[1]).getName();
+                if (Bukkit.getBanList(Type.NAME).isBanned(playerName)) {
+                    Bukkit.getBanList(Type.NAME).pardon(playerName);
+                }
+
+            }
+
+            
         } catch (IndexOutOfBoundsException excpt) {
             
         }
@@ -407,11 +293,11 @@ public class Main extends JavaPlugin implements Listener
         }
                                  
         if (command.getName().equalsIgnoreCase("roll")) {
-            int special = RandomGenerator.of("Random").nextInt(SPECIAL_PROBABILITY); 
+            int special = new Random().nextInt(SPECIAL_PROBABILITY); 
 
             if (special == 1) {
                 // do a special roll
-                announceRoll(pickRandomFromList(specialFortunes), (Player) sender);
+                announceRoll(pickRandomFromList(SpecialFortunes.fortunes), (Player) sender);
             } else {
                 // normal roll
                 announceRoll(pickRandomFromList(regularFortunes), (Player) sender);
