@@ -48,13 +48,27 @@ public class Main extends JavaPlugin implements Listener
     private List<Fortune> regularFortunes = new ArrayList<>();
 
     private HashMap<String, Date> nextRolls = new HashMap<String, Date>();
+    private Commands commandExecutor;
 
     @Override
     public void onEnable() {
         // Save default config if it doesn't exist
         saveDefaultConfig();
         loadAdvertsFromConfig();
-        loadRegularFortunesFromConfig();
+        
+        // Load fortunes from RegularFortunes class
+        regularFortunes = RegularFortunes.loadRegularFortunesFromConfig(this);
+        
+        // Register command executor
+        commandExecutor = new Commands(this, nextRolls, regularFortunes);
+        getCommand("roll").setExecutor(commandExecutor);
+        getCommand("checkRRolls").setExecutor(commandExecutor);
+        getCommand("checkSRolls").setExecutor(commandExecutor);
+        getCommand("funnyban").setExecutor(commandExecutor);
+        getCommand("rrolltest").setExecutor(commandExecutor);
+        getCommand("srolltest").setExecutor(commandExecutor);
+        getCommand("unfortunate").setExecutor(commandExecutor);
+        
         getServer().getPluginManager().registerEvents(this, this);
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -86,86 +100,6 @@ public class Main extends JavaPlugin implements Listener
         }
         
         getLogger().info("Loaded " + adverts.size() + " adverts from config");
-    }
-    
-    /**
-     * Loads regular fortunes from config.yml
-     */
-    private void loadRegularFortunesFromConfig() {
-        regularFortunes.clear();
-        
-        regularFortunes.add(new Fortune("#a205df", "Very Bad Luck", (player) -> {
-            player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2 * 60 * 20, 0)));
-            int s = new Random().nextInt(10); 
-            Location loco = player.getLocation();
-            switch (s) {
-                case 0:
-                    Location centerOfBlock = loco.add(0, 0.5, 0);
-                    loco.getWorld().dropItemNaturally(centerOfBlock, new ItemStack(Material.COBBLESTONE, 920));
-                    break;
-                case 1:
-                    player.addPotionEffect((new PotionEffect(PotionEffectType.POISON, 25 * 20, 0)));
-                    break;
-                case 2:
-                    player.teleport(loco.add(0, 164, 0));
-                    break;
-                case 3:
-                    player.addPotionEffect((new PotionEffect(PotionEffectType.WITHER, 25 * 20, 0)));
-                    break;
-                case 4:
-                    player.setHealth(2);
-                    break;
-                default:
-                    player.setFireTicks(200);
-                    break;
-            }
-        }));
-        
-        regularFortunes.add(new Fortune("#7fec11", "Bad Luck", (player) -> {
-            player.addPotionEffect((new PotionEffect(PotionEffectType.UNLUCK, 2 * 60 * 20, 0)));
-            double k = Math.random();
-            if (k >= 0.5){
-                player.addPotionEffect((new PotionEffect(PotionEffectType.BLINDNESS,25*20 , 0)));
-            }else{
-                player.addPotionEffect((new PotionEffect(PotionEffectType.SLOW,2 * 60 * 20 , 0)));
-            }
-        }));
-        
-        // Load regular fortunes from config
-        List<Map<?, ?>> configFortunes = getConfig().getMapList("regularFortunes");
-        
-        for (Map<?, ?> fortuneMap : configFortunes) {
-            String color = (String) fortuneMap.get("color");
-            String text = (String) fortuneMap.get("text");
-            regularFortunes.add(new Fortune(color, text));
-        }
-        
-        getLogger().info("Loaded " + regularFortunes.size() + " fortunes (including " + configFortunes.size() + " from config)");
-    }
-
-    private void announceRoll(Fortune fortune, Player roller) {
-        TextComponent toRoller = new TextComponent("Your fortune: " + fortune.fortune);
-        toRoller.setBold(true);
-        toRoller.setColor(ChatColor.of(fortune.color));
-        
-        TextComponent toEveryoneElse = new TextComponent(roller.getName() + "'s fortune: " + fortune.fortune);
-        toEveryoneElse.setBold(true);
-        toEveryoneElse.setColor(ChatColor.of(fortune.color));
-
-        for (Player player : getServer().getOnlinePlayers()) {
-            if (player.equals(roller)) {
-                player.spigot().sendMessage(toRoller);
-            } else {
-                player.spigot().sendMessage(toEveryoneElse);
-            }
-        }
-
-        fortune.sideEffect.run(roller);
-        getLogger().info(roller.getName() + "rolled " + fortune.fortune);
-    }
-
-    private <T> T pickRandomFromList(T[] list) {
-        return list[new Random().nextInt(list.length)];
     }
 
     private <T> T pickRandomFromList(List<T> list) {
@@ -199,57 +133,6 @@ public class Main extends JavaPlugin implements Listener
                     urlHandler(actualMessage, new HashSet<Player>(Arrays.asList(recipient)));
                 }
             }
-
-            if (commandNouns[0].equals("/funnyban") && e.getPlayer().isOp())  {
-                //Player recipient = getServer().getPlayerExact(commandNouns[1]);
-                //if (recipient != null) { 
-                String recipient = commandNouns[1];
-                if (true) {
-                    String banReason;
-                    if (commandNouns.length == 2) {
-                        banReason = "USER WAS BANNED FOR THIS PEKO";
-                    } else {
-                        String[] actualMessageNouns = Arrays.copyOfRange(commandNouns, 2, commandNouns.length);
-                        banReason = String.join(" ", actualMessageNouns);
-                    }
-
-                    TextComponent component = new TextComponent("Banned " + recipient + " ");
-                    component.setColor(ChatColor.RED);
-
-                    TextComponent reason = new TextComponent("(" + banReason + ")");
-                    reason.setColor(ChatColor.of("#FF0000"));
-                    reason.setBold(true);
-
-                    getServer().spigot().broadcast(component, reason);
-                }
-            }
-
-            if (commandNouns[0].equals("/rrolltest") && e.getPlayer().isOp())  {
-                announceRoll(regularFortunes.get(Integer.parseInt(commandNouns[1])), e.getPlayer());
-            }
-
-            if (commandNouns[0].equals("/srolltest") && e.getPlayer().isOp())  {
-                announceRoll(SpecialFortunes.fortunes[Integer.parseInt(commandNouns[1])], e.getPlayer());
-            }
-
-            if (commandNouns[0].equals("/unfortunate") && e.getPlayer().isOp()) {
-
-                String playerName = getServer().getOfflinePlayer(commandNouns[1]).getName();
-                if (Bukkit.getBanList(Type.NAME).isBanned(playerName)) {
-                    Bukkit.getBanList(Type.NAME).pardon(playerName);
-                    TextComponent pardonMessage = new TextComponent(playerName+"'s bad luck has been PARDONED!");
-                    pardonMessage.setColor(ChatColor.of("#00FF00"));
-                    pardonMessage.setBold(true);
-                    getServer().spigot().broadcast(pardonMessage);
-                }
-                else {
-                    e.setMessage(playerName + "is not banned or doesn't exist");
-                }
-
-
-            }
-
-            
         } catch (IndexOutOfBoundsException excpt) {
             
         }
@@ -281,60 +164,5 @@ public class Main extends JavaPlugin implements Listener
                 continue;
             }
         }
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender,
-                             Command command,
-                             String label,
-                             String[] args) {
-
-        // allowed to roll?
-        Date allowedTime = nextRolls.get(sender.getName());
-
-        if (command.getName().equalsIgnoreCase("roll")) {
-            if (allowedTime != null) {
-                if (allowedTime.after(new Date(System.currentTimeMillis()))) {
-                    int timeLeft = (int) ((allowedTime.getTime() - System.currentTimeMillis()) / 1000);
-                    sender.sendMessage("You can roll again in " + timeLeft + " seconds.");
-                    return true;
-                }
-            }
-            int special = new Random().nextInt(SPECIAL_PROBABILITY); 
-
-            if (special == 1) {
-                // do a special roll
-                announceRoll(pickRandomFromList(SpecialFortunes.fortunes), (Player) sender);
-            } else {
-                // normal roll
-                announceRoll(pickRandomFromList(regularFortunes), (Player) sender);
-            }
-
-            // debounce
-            Date nextAllowedRollTime = new Date(System.currentTimeMillis() + 30*1000);
-            this.nextRolls.put(sender.getName(), nextAllowedRollTime);
-        }
-
-        if (command.getName().equalsIgnoreCase("checkRRolls") && sender.isOp()) {
-            StringBuilder RfoutuneNames = new StringBuilder();
-            int i = 0;
-            for (Fortune rf : regularFortunes) {
-                RfoutuneNames.append("|§n§3").append(i).append("§r-").append(rf.getFortune());
-                ++i;
-            }
-            sender.sendMessage(RfoutuneNames.toString());
-        }
-
-        if (command.getName().equalsIgnoreCase("checkSRolls") && sender.isOp()) {
-            StringBuilder foutuneNames = new StringBuilder();
-            int j = 0;
-            for (Fortune f : SpecialFortunes.fortunes) {
-                foutuneNames.append("|§n§3").append(j).append("§r-").append(f.getFortune());
-                ++j;
-            }
-            sender.sendMessage(foutuneNames.toString());
-        }
-
-        return true;
     }
 }
