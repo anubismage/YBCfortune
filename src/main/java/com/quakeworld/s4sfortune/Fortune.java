@@ -22,4 +22,8 @@ public class Fortune {
         this.fortune = fortune;
         this.sideEffect = (p) -> {};
     }
+
+    public String getFortune() {
+        return fortune;
+    }
 }

@@ -15,14 +15,29 @@ commands:
       aliases: [ ]
       usage: "Usage: /funnyban user reason"
       permission: s4sfortune.funnyban
+    unfortunate:
+      description: Removes a fortune ban from a player
+      usage: "/unfortunate <player>"
+      permission: s4sfortune.admin
     srolltest:
-      description: use with roll order to test rolls
+      description: used to test special rolls
       aliases: [ ]
       usage: "Usage: /srolltest <roll number>"
       permission: s4sfortune.admin
-    unfortune:
-      description: Removes a fortune ban from a player
-      usage: "/unfortunate <player>"
+    rrolltest:
+      description: used to test regular rolls
+      aliases: [ ]
+      usage: "Usage: /rrolltest <roll number>"
+      permission: s4sfortune.admin
+    checkRRolls:
+      description: used to see roll index
+      aliases: [ ]
+      usage: "Usage: /checkRRolls"
+      permission: s4sfortune.admin
+    checkSRolls:
+      description: used to see special roll index
+      aliases: [ ]
+      usage: "Usage: /checkSRolls"
       permission: s4sfortune.admin
 permissions:
   s4sfortune.roll:
@@ -31,6 +46,6 @@ permissions:
   s4sfortune.funnyban:
    description: funny ban 
    default: op
-  s4sfortune.srolltest:
-   description: test roll order
+  s4sfortune.admin:
+   description: admin
    default: op

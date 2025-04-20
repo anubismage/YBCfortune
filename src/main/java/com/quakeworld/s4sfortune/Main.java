@@ -113,10 +113,10 @@ public class Main extends JavaPlugin implements Listener
                     player.addPotionEffect((new PotionEffect(PotionEffectType.WITHER, 25 * 20, 0)));
                     break;
                 case 4:
-                    player.setHealth(1);
+                    player.setHealth(2);
                     break;
                 default:
-                    player.setFireTicks(500);
+                    player.setFireTicks(200);
                     break;
             }
         }));
@@ -224,7 +224,7 @@ public class Main extends JavaPlugin implements Listener
                 }
             }
 
-            if (commandNouns[0].equals("/regrolltest") && e.getPlayer().isOp())  {
+            if (commandNouns[0].equals("/rrolltest") && e.getPlayer().isOp())  {
                 announceRoll(regularFortunes.get(Integer.parseInt(commandNouns[1])), e.getPlayer());
             }
 
@@ -237,7 +237,15 @@ public class Main extends JavaPlugin implements Listener
                 String playerName = getServer().getOfflinePlayer(commandNouns[1]).getName();
                 if (Bukkit.getBanList(Type.NAME).isBanned(playerName)) {
                     Bukkit.getBanList(Type.NAME).pardon(playerName);
+                    TextComponent pardonMessage = new TextComponent(playerName+"'s bad luck has been PARDONED!");
+                    pardonMessage.setColor(ChatColor.of("#00FF00"));
+                    pardonMessage.setBold(true);
+                    getServer().spigot().broadcast(pardonMessage);
                 }
+                else {
+                    e.setMessage(playerName + "is not banned or doesn't exist");
+                }
+
 
             }
 
@@ -284,15 +292,14 @@ public class Main extends JavaPlugin implements Listener
         // allowed to roll?
         Date allowedTime = nextRolls.get(sender.getName());
 
-        if (allowedTime != null) {
-            if (allowedTime.after(new Date(System.currentTimeMillis()))) {
-                int timeLeft = (int) ((allowedTime.getTime() - System.currentTimeMillis()) / 1000);
-                sender.sendMessage("You can roll again in " + timeLeft + " seconds.");
-                return true;
-            }
-        }
-                                 
         if (command.getName().equalsIgnoreCase("roll")) {
+            if (allowedTime != null) {
+                if (allowedTime.after(new Date(System.currentTimeMillis()))) {
+                    int timeLeft = (int) ((allowedTime.getTime() - System.currentTimeMillis()) / 1000);
+                    sender.sendMessage("You can roll again in " + timeLeft + " seconds.");
+                    return true;
+                }
+            }
             int special = new Random().nextInt(SPECIAL_PROBABILITY); 
 
             if (special == 1) {
@@ -306,6 +313,26 @@ public class Main extends JavaPlugin implements Listener
             // debounce
             Date nextAllowedRollTime = new Date(System.currentTimeMillis() + 30*1000);
             this.nextRolls.put(sender.getName(), nextAllowedRollTime);
+        }
+
+        if (command.getName().equalsIgnoreCase("checkRRolls") && sender.isOp()) {
+            StringBuilder RfoutuneNames = new StringBuilder();
+            int i = 0;
+            for (Fortune rf : regularFortunes) {
+                RfoutuneNames.append("|§n§3").append(i).append("§r-").append(rf.getFortune());
+                ++i;
+            }
+            sender.sendMessage(RfoutuneNames.toString());
+        }
+
+        if (command.getName().equalsIgnoreCase("checkSRolls") && sender.isOp()) {
+            StringBuilder foutuneNames = new StringBuilder();
+            int j = 0;
+            for (Fortune f : SpecialFortunes.fortunes) {
+                foutuneNames.append("|§n§3").append(j).append("§r-").append(f.getFortune());
+                ++j;
+            }
+            sender.sendMessage(foutuneNames.toString());
         }
 
         return true;

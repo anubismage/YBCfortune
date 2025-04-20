@@ -41,7 +41,7 @@ public class SpecialFortunes {
         new Fortune("#396a24", "*BRAAAAAAP* You Feel a Strange Smell around you ", (player) -> {
         player.addPotionEffect((new PotionEffect(PotionEffectType.CONFUSION, 2*20,1)));
     }),
-        new Fortune("#141414", "§kEND §rYou meet a dark handsome stranger §kEND", (player) -> {
+        new Fortune("#141414", "§kEND §rYou meet a dark handsome stranger §kEND§r", (player) -> {
             Location locc =player.getLocation();
             locc.getWorld().spawnEntity(locc.add(0,1,0), EntityType.ENDERMAN);
     }),
@@ -68,6 +68,8 @@ public class SpecialFortunes {
         loc.getWorld().dropItemNaturally(centerOfBlock,item);
     }),
         new Fortune("#68923a", "I Yearned For The Mines", (player) -> {
+
+        globalSoundPlayer("vtcraft:chat.yearned");
         player.addPotionEffect((new PotionEffect(PotionEffectType.SLOW_DIGGING, 30*20,0)));
         Location loc = player.getLocation();
         Location centerOfBlock = loc.add(0, 0.5, 0);
@@ -130,14 +132,14 @@ public class SpecialFortunes {
         }
         else{
             int amount = (int)(s* 10);
-            ItemStack gN = new ItemStack(Material.IRON_NUGGET,amount);
+            ItemStack gN = new ItemStack(Material.IRON_NUGGET,1);
             ItemMeta meta = gN.getItemMeta();
             meta.setDisplayName(org.bukkit.ChatColor.STRIKETHROUGH + "Pocket Change");
             gN.setItemMeta(meta);
             locoG.getWorld().dropItemNaturally(locoG,gN);
         }
     }),
-        new Fortune("#006994", "§lYou caught a fish!", (player) -> {
+        new Fortune("#006994", "§lYou caught a fish!§r", (player) -> {
             List<Material> fishlist = Arrays.asList(Material.TROPICAL_FISH_BUCKET,Material.PUFFERFISH_BUCKET,Material.COD_BUCKET,Material.SALMON_BUCKET);
             Material Fish = fishlist.get(new Random().nextInt(fishlist.size()));
             Location loc = player.getLocation();
@@ -145,8 +147,8 @@ public class SpecialFortunes {
             loc.getWorld().dropItemNaturally(loc,item);
         }),//fish
 
-        new Fortune("#ffd700","§lCHICKEN JOCKEY!!!", (player) -> {
-            globalSoundPlayer("vtcraft:chat.chicken");
+        new Fortune("#ffd700","§lCHICKEN JOCKEY!!!§r", (player) -> {
+            globalSoundPlayer("vtcraft:chat.chickenjockey");
             //player.playSound(player.getLocation(), "vtcraft:chat.chicken" , SoundCategory.VOICE, 6 ,1);
             //player.chat("chicken");
             Location locc = player.getLocation();
@@ -157,13 +159,13 @@ public class SpecialFortunes {
 
         }),
 
-            new Fortune("#aa00aa","§lTHE NETHER!", (player)->{
-                //globalSoundPlayer("vtcraft:chat.nether");
+            new Fortune("#aa00aa","§lTHE NETHER!§r", (player)->{
+                globalSoundPlayer("vtcraft:chat.thenether");
                 Location nether = new Location(Bukkit.getWorld("world_nether"),23,100,-16);
                 player.teleport(nether);
             }),
-            new Fortune("#ffa500","§lFLINT AND STEEL", (player)->{
-                //globalSoundPlayer("vtcraft:chat.flintNsteel");
+            new Fortune("#ffa500","§lFLINT AND STEEL§r", (player)->{
+                globalSoundPlayer("vtcraft:chat.flintandsteel");
                 player.setFireTicks(1000);
                 Location loc = player.getLocation();
                 Location centerOfBlock = loc.add(0, 0.5, 0);
